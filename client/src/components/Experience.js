@@ -4,12 +4,12 @@ const Experience = () => {
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-900 px-6">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12">Professional Experience</h2>
+        <h2 className=" text-gray-800 dark:text-gray-200 text-3xl font-bold text-center mb-12">Professional Experience</h2>
 
         {/* Research Assistant - GIS */}
         <div className="border-l-4 border-blue-600 pl-6 relative mb-10">
           <div className="absolute -left-3 top-2 w-4 h-4 bg-blue-600 rounded-full"></div>
-          <h3 className="text-xl font-semibold">Research Assistant, CAESER</h3>
+          <h3 className="text-gray-800 dark:text-gray-200 text-xl font-semibold">Research Assistant, CAESER</h3>
           <p className="text-sm text-gray-500">University of Memphis · Oct 2023 – Present</p>
           <ul className="mt-3 list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
             <li>Engineered automated geospatial data pipelines using Python and SQL, enhancing data processing throughput by 85%.</li>
@@ -23,7 +23,7 @@ const Experience = () => {
         {/* TCS UI Developer */}
         <div className="border-l-4 border-blue-600 pl-6 relative">
           <div className="absolute -left-3 top-2 w-4 h-4 bg-blue-600 rounded-full"></div>
-          <h3 className="text-xl font-semibold">Software Developer</h3>
+          <h3 className="text-gray-800 dark:text-gray-200 text-xl font-semibold">Software Developer</h3>
           <p className="text-sm text-gray-500">Tata Consultancy Services · Oct 2020 – Aug 2023</p>
           <ul className="mt-3 list-disc list-inside text-gray-700 dark:text-gray-300 space-y-2">
             <li>Led development of responsive and accessible UIs for high-volume financial platforms using React.js, JavaScript, and SASS.</li>

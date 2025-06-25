@@ -10,7 +10,7 @@ const Hero = () => {
     >
       {/* Text Section */}
       <div className="flex-1 md:pr-10 text-center md:text-left space-y-5">
-        <h1 className="text-4xl md:text-5xl font-extrabold">
+        <h1 className="text-gray-800 dark:text-gray-200 text-4xl md:text-5xl font-extrabold">
           Nagarjun Reddy Dudipala
         </h1>
         <p className="text-xl text-blue-600 dark:text-blue-400">

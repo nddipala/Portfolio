@@ -22,12 +22,13 @@ function App() {
               <Experience />
               <Skills />
               <Projects />
-              <Contact />
             </>
           }
         />
+        <Route path="/home" element={<Hero />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );
