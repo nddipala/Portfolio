@@ -1,23 +1,35 @@
 import React from "react";
-import Hero from "./components/Hero";
-
-import Skills from "./components/Skills";
-import Experience from "./components/Experience";
-import Project from "./components/Project";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
-import Contact  from "./components/Contact";
+import Hero from "./components/Hero";
+import Experience from "./components/Experience";
+import Skills from "./components/Skills";
+import Projects from "./components/Projects";
+import Contact from "./components/Contact";
+import BlogList from "./components/BlogList";
+import BlogDetail from "./components/BlogDetail";
+
 function App() {
   return (
-    <div className="font-sans bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+    <Router>
       <Header />
-      
-      <Hero />
-    
-      <Experience />
-      <Skills />
-      <Project />
-      <Contact />
-    </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero />
+              <Experience />
+              <Skills />
+              <Projects />
+              <Contact />
+            </>
+          }
+        />
+        <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/:id" element={<BlogDetail />} />
+      </Routes>
+    </Router>
   );
 }
 

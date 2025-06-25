@@ -29,7 +29,8 @@ const Header = () => {
         </a>
         <ul className="flex gap-6 text-sm font-medium text-gray-700 dark:text-gray-300">
           <li><a href="#hero" className="hover:text-blue-600">Home</a></li>
-          <li><a href="#blog" className="hover:text-blue-600">Blog</a></li>
+          <li><a href="/blog" className="hover:text-blue-600">Blog</a></li>
+
         </ul>
         <button
           onClick={() => setDarkMode(!darkMode)}
