@@ -1,0 +1,163 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cursor-size: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  background-color: #f4f6fb;
+  color: #0f172a;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark body {
+  background-color: #050816;
+  color: #e2e8f0;
+}
+
+::selection {
+  background: rgba(45, 212, 191, 0.35);
+  color: inherit;
+}
+
+.focus-ring {
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-teal-400 focus-visible:ring-offset-white;
+}
+
+.dark .focus-ring {
+  @apply focus-visible:ring-offset-slate-900;
+}
+
+.card {
+  @apply relative rounded-3xl border border-slate-200/70 bg-white/80 backdrop-blur-xl shadow-lg shadow-slate-900/5 transition-transform duration-300;
+}
+
+.card:hover {
+  @apply -translate-y-1;
+}
+
+.dark .card {
+  @apply border-white/10 bg-white/5 shadow-glass;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2 text-sm font-medium tracking-tight transition-all duration-200 focus-ring;
+}
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  color: #0f172a;
+  background: linear-gradient(120deg, #34d399 0%, #22d3ee 45%, #6366f1 100%);
+  box-shadow: 0 30px 80px -40px rgba(16, 185, 129, 0.5);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,0.4) 0%, transparent 40%, rgba(255,255,255,0.2) 60%, transparent 100%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.btn-primary:hover::after {
+  opacity: 1;
+}
+
+.btn-outline {
+  @apply border border-slate-300/80 bg-white/60 text-slate-900;
+}
+
+.btn-outline:hover {
+  @apply border-transparent bg-slate-900 text-white shadow-lg;
+}
+
+.dark .btn-outline {
+  @apply border-white/15 bg-white/10 text-slate-100;
+}
+
+.dark .btn-outline:hover {
+  @apply bg-white/20 text-white;
+}
+
+.btn-ghost {
+  @apply border border-transparent text-slate-600;
+}
+
+.btn-ghost:hover {
+  @apply text-slate-900;
+}
+
+.dark .btn-ghost {
+  @apply text-slate-300;
+}
+
+.dark .btn-ghost:hover {
+  @apply text-white;
+}
+
+.chip {
+  @apply inline-flex items-center rounded-full border border-slate-300/70 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-600;
+}
+
+.dark .chip {
+  @apply border-white/15 bg-white/5 text-slate-300;
+}
+
+.surface-blur {
+  @apply rounded-[32px] border border-slate-200/60 bg-white/70 backdrop-blur-2xl shadow-lg shadow-slate-900/5;
+}
+
+.dark .surface-blur {
+  @apply border-white/10 bg-white/5 shadow-glass;
+}
+
+.eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.38em] text-slate-500;
+}
+
+.dark .eyebrow {
+  @apply text-slate-400;
+}
+
+.text-gradient {
+  background: linear-gradient(120deg, #22d3ee 0%, #a855f7 45%, #f97316 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.cursor-dot,
+.cursor-outline {
+  pointer-events: none;
+  position: fixed;
+  z-index: 50;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-dot {
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.9;
+}
+
+.cursor-outline {
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+  opacity: 0.25;
+  transition: transform 0.2s ease;
+}
+
+.pattern-grid {
+  background-image: var(--pattern-bg, none);
+}
