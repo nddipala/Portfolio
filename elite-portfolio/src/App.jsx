@@ -12,16 +12,20 @@ import Cursor from './components/Cursor'
 function Background(){
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      {/* subtle dot grid */}
+      <div className="absolute inset-0 bg-grid-slate opacity-[0.35]" />
+      {/* radial colour wash */}
       <div
-        className="absolute inset-0 opacity-50 mix-blend-screen"
+        className="absolute inset-0 opacity-40 mix-blend-screen"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 20% 20%, rgba(14,165,233,0.25), transparent 45%), radial-gradient(circle at 80% 0%, rgba(129,140,248,0.25), transparent 40%), radial-gradient(circle at 50% 80%, rgba(45,212,191,0.25), transparent 45%)'
+            'radial-gradient(ellipse at 15% 25%, rgba(14,165,233,0.3), transparent 50%), radial-gradient(ellipse at 85% 5%, rgba(129,140,248,0.3), transparent 45%), radial-gradient(ellipse at 50% 85%, rgba(45,212,191,0.2), transparent 50%)'
         }}
       />
-      <div className="absolute inset-0 bg-grid-slate opacity-40" />
-      <div className="absolute top-[-30%] left-[18%] h-[360px] w-[360px] rounded-full bg-teal-400/35 blur-[170px]" />
-      <div className="absolute bottom-[-25%] right-[12%] h-[420px] w-[420px] rounded-full bg-indigo-500/30 blur-[180px]" />
+      {/* large glow orbs */}
+      <div className="absolute top-[-20%] left-[10%] h-[500px] w-[500px] rounded-full bg-teal-400/20 blur-[200px]" />
+      <div className="absolute bottom-[-15%] right-[5%] h-[550px] w-[550px] rounded-full bg-indigo-500/20 blur-[220px]" />
+      <div className="absolute top-[40%] right-[30%] h-[300px] w-[300px] rounded-full bg-violet-500/10 blur-[160px]" />
     </div>
   )
 }
