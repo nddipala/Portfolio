@@ -8,11 +8,14 @@ import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import BlogList from "./components/BlogList";
 import BlogDetail from "./components/BlogDetail";
+import Footer from "./components/Footer";
+import Chatbot from "./components/Chatbot";
 
 function App() {
   return (
     <Router>
       <Header />
+      <Chatbot />
       <Routes>
         <Route
           path="/"
@@ -22,6 +25,7 @@ function App() {
               <Experience />
               <Skills />
               <Projects />
+              <Footer />
             </>
           }
         />
