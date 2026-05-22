@@ -195,6 +195,12 @@ const Chatbot = () => {
 
       const data = await res.json();
 
+      if (res.status === 429 || data?.type === "quota_exceeded") {
+        setMessages((prev) => [...prev, { role: "assistant", content: RATE_LIMIT_MESSAGE }]);
+        setLoading(false);
+        return;
+      }
+
       if (data.error) throw new Error(data.error.message);
 
       const reply =
