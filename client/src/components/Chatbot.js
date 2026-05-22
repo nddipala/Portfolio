@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const DAILY_LIMIT = 50;
+const DAILY_LIMIT = 30;
 const STORAGE_KEY = "nj_chat_usage";
 
 const SYSTEM_PROMPT = `You are Nagarjun's personal portfolio assistant. Your ONLY job is to answer questions about Nagarjun — his skills, experience, projects, education, achievements, and how to contact him.
@@ -178,18 +178,18 @@ const Chatbot = () => {
       const history = messages
         .filter((m) => m.role !== "assistant" || m.content !== WELCOME.content)
         .map((m) => ({
-          role: m.role === "assistant" ? "model" : "user",
-          parts: [{ text: m.content }],
+          role: m.role === "assistant" ? "assistant" : "user",
+          content: m.content,
         }));
 
-      history.push({ role: "user", parts: [{ text }] });
+      history.push({ role: "user", content: text });
 
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: history,
+          system: SYSTEM_PROMPT,
+          messages: history,
         }),
       });
 
@@ -201,10 +201,10 @@ const Chatbot = () => {
         return;
       }
 
-      if (data.error) throw new Error(data.error.message);
+      if (!res.ok) throw new Error(data.error || "API error");
 
       const reply =
-        data.candidates?.[0]?.content?.parts?.[0]?.text ||
+        data.reply ||
         "Sorry, I couldn't generate a response. Please try again.";
 
       incrementUsage();
