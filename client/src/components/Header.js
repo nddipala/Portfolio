@@ -44,6 +44,10 @@ const Header = () => {
     return isHome && active === link.id;
   };
 
+  const openCommandPalette = () => {
+    window.dispatchEvent(new CustomEvent("open-command-palette"));
+  };
+
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
@@ -91,12 +95,16 @@ const Header = () => {
           })}
         </nav>
 
-        {/* Right: ⌘K hint + CTA */}
+        {/* Right: ⌘K + CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] text-white/25 text-[10px] font-mono select-none">
+          <button
+            onClick={openCommandPalette}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] text-white/28 text-[10px] font-mono hover:border-white/[0.16] hover:text-white/50 transition-all duration-200 cursor-pointer select-none"
+            aria-label="Open command palette"
+          >
             <span className="text-white/40">⌘K</span>
             <span>search</span>
-          </div>
+          </button>
           <a
             href="/contact"
             className="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-violet to-brand-cyan text-white text-[11px] font-mono font-medium tracking-[0.1em] uppercase hover:opacity-90 transition-opacity shadow-lg shadow-brand-violet/20"
@@ -112,21 +120,9 @@ const Header = () => {
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
         >
-          <span
-            className={`w-4 h-px bg-white/70 transition-all duration-200 ${
-              menuOpen ? "rotate-45 translate-y-[5px]" : ""
-            }`}
-          />
-          <span
-            className={`w-4 h-px bg-white/70 transition-all duration-200 ${
-              menuOpen ? "opacity-0 scale-x-0" : ""
-            }`}
-          />
-          <span
-            className={`w-4 h-px bg-white/70 transition-all duration-200 ${
-              menuOpen ? "-rotate-45 -translate-y-[5px]" : ""
-            }`}
-          />
+          <span className={`w-4 h-px bg-white/70 transition-all duration-200 ${menuOpen ? "rotate-45 translate-y-[5px]" : ""}`} />
+          <span className={`w-4 h-px bg-white/70 transition-all duration-200 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
+          <span className={`w-4 h-px bg-white/70 transition-all duration-200 ${menuOpen ? "-rotate-45 -translate-y-[5px]" : ""}`} />
         </button>
       </div>
 
@@ -139,10 +135,7 @@ const Header = () => {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
             className="md:hidden border-t border-white/[0.06] px-5 py-4 flex flex-col gap-1"
-            style={{
-              background: "rgba(6,7,11,0.97)",
-              backdropFilter: "blur(20px)",
-            }}
+            style={{ background: "rgba(6,7,11,0.97)", backdropFilter: "blur(20px)" }}
           >
             {navLinks.map((link) => (
               <a
@@ -158,6 +151,12 @@ const Header = () => {
                 {link.label}
               </a>
             ))}
+            <button
+              onClick={() => { setMenuOpen(false); openCommandPalette(); }}
+              className="mt-1 py-3 px-4 rounded-lg text-[11px] font-mono text-white/30 border border-white/[0.06] hover:border-white/[0.12] transition-colors text-left"
+            >
+              ⌘K Search commands
+            </button>
             <a
               href="/contact"
               onClick={() => setMenuOpen(false)}

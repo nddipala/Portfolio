@@ -47,9 +47,7 @@ TECHNICAL SKILLS:
 PROFESSIONAL EXPERIENCE:
 
 1. Aetna, a CVS Health Company — Hartford County, CT (Remote)
-   Role: Sr. Full Stack Java Developer (Contract)
-   Period: July 2025 – Present
-   Key achievements:
+   Role: Sr. Full Stack Java Developer (Contract) | July 2025 – Present
    - Improved API response time by 75%, supporting 1M+ requests across member and policy workflows
    - Architected Kafka/Confluent event streams handling 5M+ eligibility and claims events per day with 99.99% availability
    - Implemented IBM MQ messaging for reliable legacy mainframe integration
@@ -57,55 +55,37 @@ PROFESSIONAL EXPERIENCE:
    - Integrated Ping Identity OAuth2/OIDC SSO across internal portals
    - Secured APIs via Apigee and F5/Akamai edge policies
    - Created Grafana/Splunk observability for 50+ KPIs, cutting incident triage time by 30%
-   - Implemented CI/CD with GitHub Actions, JFrog, Argo CD on GKE — increased deployment frequency from monthly to several times per week
+   - CI/CD with GitHub Actions, JFrog, Argo CD on GKE — deployments from monthly to several times per week
 
 2. University of Memphis — Memphis, TN
-   Role: Frontend Developer / Research Assistant
-   Period: Sep 2023 – May 2024
-   Key achievements:
-   - Cut time to stand up map-based analytics views from days to under 2 hours using React + ArcGIS
-   - Boosted ETL data-processing throughput by 85% with Python/SQL pipelines into PostgreSQL/PostGIS
+   Role: Frontend Developer / Research Assistant | Sep 2023 – May 2024
+   - Cut time to stand up map-based analytics views from days to under 2 hours (React + ArcGIS)
+   - Boosted ETL throughput by 85% with Python/SQL pipelines into PostgreSQL/PostGIS
    - Reduced dashboard load times by 20% via spatial indexing and query optimization
-   - Cut new-assistant onboarding time by 40% through standardized UI components and Confluence docs
+   - Cut new-assistant onboarding time by 40% via standardized UI components
 
-3. Citi Bank — Hyderabad, India (Hybrid)
-   Role: Full Stack Developer (Contract)
-   Period: Aug 2021 – Aug 2023
-   Key achievements:
-   - Built Java 8/Spring Boot microservices for digital banking serving hundreds of thousands of daily users
+3. Citi Bank — Hyderabad, India
+   Role: Full Stack Developer (Contract) | Aug 2021 – Aug 2023
+   - Built Java 8/Spring Boot microservices for digital banking (hundreds of thousands of daily users)
    - Improved SQL Server query performance by 20% via Hibernate/JPA tuning
    - Reduced UAT regression defects by 30% with Jenkins/Maven/TestNG/Selenium CI pipelines
-   - Cut MongoDB audit-data retrieval times by 15% and lifted key components to Azure
+   - Cut MongoDB audit-data retrieval times by 15%, lifted key components to Azure
 
-4. Elevance Health — Hyderabad, India (On-site)
-   Role: Full Stack Developer (Contract)
-   Period: May 2019 – Aug 2021
-   Key achievements:
-   - Designed Java/Spring REST APIs contributing to a 15% improvement in user satisfaction scores
-   - Reduced unplanned downtime by 10% with Grafana dashboards and proactive performance alerts
-   - Automated deployments with Maven, Ansible, and Tomcat, eliminating manual release errors
+4. Elevance Health — Hyderabad, India
+   Role: Full Stack Developer (Contract) | May 2019 – Aug 2021
+   - Designed Java/Spring REST APIs contributing to 15% improvement in user satisfaction
+   - Reduced unplanned downtime by 10% with Grafana dashboards and proactive alerts
+   - Automated deployments with Maven, Ansible, and Tomcat
 
 SELECTED PROJECTS:
-
-1. Healthcare Provider Mapping Portal (Personal/Academic)
-   - React, Node.js/Express, PostgreSQL/PostGIS, ArcGIS Online
-   - Visualizes providers, members, and access-to-care gaps for thousands of network records
-   - Implements drive-time and proximity analysis highlighting underserved regions
-
-2. Automated Geospatial Analytics Platform (University of Memphis)
-   - Python, SQL, ArcGIS Pro, ArcPy, PostgreSQL/PostGIS
-   - Replaced manual GIS workflows with nightly ETL jobs and automated QA checks
-   - Enables non-technical users to run ad-hoc spatial queries via web maps
-
-3. Multithreaded Data Visualization Tool (Academic/Personal)
-   - Java, JavaFX, JDBC, MySQL
-   - Handles 1M+ row datasets with 30% faster processing via multithreading
-   - Features configurable charting, filtering, and saveable layout persistence
+1. Healthcare Provider Mapping Portal — React, Node.js, PostgreSQL/PostGIS, ArcGIS Online
+2. Automated Geospatial Analytics Platform — Python, SQL, ArcGIS Pro, PostgreSQL/PostGIS
+3. Multithreaded Data Visualization Tool — Java, JavaFX, JDBC, MySQL
 
 You may greet users warmly and guide them to ask about Nagarjun's work.`;
 
 const RATE_LIMIT_MESSAGE =
-  "Nagarjun is busy on a production issue right now and I've hit my daily limit. Please come back later! If it's important, drop a message on the Contacts page — Nagarjun will check and get back to you. 🙂";
+  "Nagarjun is busy on a production issue right now and I've hit my daily limit. Please come back later! If it's urgent, use the Contact page — Nagarjun will get back to you. 🙂";
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -144,11 +124,10 @@ const Chatbot = () => {
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Show tooltip briefly on first load to draw attention
   useEffect(() => {
-    const timer = setTimeout(() => setShowTooltip(true), 3000);
-    const hide = setTimeout(() => setShowTooltip(false), 7000);
-    return () => { clearTimeout(timer); clearTimeout(hide); };
+    const show = setTimeout(() => setShowTooltip(true), 3000);
+    const hide = setTimeout(() => setShowTooltip(false), 8000);
+    return () => { clearTimeout(show); clearTimeout(hide); };
   }, []);
 
   useEffect(() => {
@@ -181,11 +160,7 @@ const Chatbot = () => {
     try {
       const history = messages
         .filter((m) => m.role !== "assistant" || m.content !== WELCOME.content)
-        .map((m) => ({
-          role: m.role === "assistant" ? "assistant" : "user",
-          content: m.content,
-        }));
-
+        .map((m) => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.content }));
       history.push({ role: "user", content: text });
 
       const res = await fetch("/api/chat", {
@@ -204,13 +179,12 @@ const Chatbot = () => {
 
       if (!res.ok) throw new Error(data.error || "API error");
 
-      const reply = data.reply || "Sorry, I couldn't generate a response. Please try again.";
       incrementUsage();
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply || "Sorry, try again in a moment!" }]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Something went wrong on my end. Please try again in a moment!" },
+        { role: "assistant", content: "Something went wrong. Please try again in a moment!" },
       ]);
     } finally {
       setLoading(false);
@@ -230,30 +204,40 @@ const Chatbot = () => {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed bottom-24 right-5 z-50 w-[350px] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden"
-            style={{ height: 480 }}
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
+            className="fixed bottom-24 right-5 z-[800] w-[360px] max-w-[calc(100vw-1.5rem)] rounded-2xl flex flex-col overflow-hidden"
+            style={{
+              height: 480,
+              background: "rgba(6,7,11,0.97)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.09)",
+              boxShadow: "0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(167,139,250,0.08)",
+            }}
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.96 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Panel header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                  N
+            {/* Gradient top strip */}
+            <div className="h-[2px] flex-shrink-0 bg-gradient-to-r from-brand-violet to-brand-cyan" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 flex-shrink-0 border-b border-white/[0.06]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-violet to-brand-cyan flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-bold text-xs font-mono">N</span>
                 </div>
                 <div>
-                  <p className="text-white text-sm font-semibold leading-none">Nagarjun's Assistant</p>
-                  <p className="text-indigo-200 text-xs mt-0.5">Ask me anything about Nagarjun</p>
+                  <p className="text-white/90 text-sm font-semibold leading-none">Nagarjun's Assistant</p>
+                  <p className="text-white/30 text-[10px] font-mono mt-0.5">Ask me anything</p>
                 </div>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-white/70 hover:text-white transition p-1 rounded-lg hover:bg-white/10"
+                className="w-7 h-7 flex items-center justify-center rounded-lg border border-white/[0.07] text-white/35 hover:text-white/65 hover:border-white/[0.14] transition-all"
                 aria-label="Close chat"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -264,11 +248,16 @@ const Chatbot = () => {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl leading-relaxed whitespace-pre-wrap text-sm ${
+                    className={`max-w-[84%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                       msg.role === "user"
-                        ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-br-sm"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-sm"
+                        ? "bg-gradient-to-br from-brand-violet to-brand-cyan text-white rounded-br-sm"
+                        : "text-white/60 rounded-bl-sm"
                     }`}
+                    style={
+                      msg.role !== "user"
+                        ? { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }
+                        : {}
+                    }
                   >
                     {msg.content}
                   </div>
@@ -277,11 +266,14 @@ const Chatbot = () => {
 
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1 items-center">
-                    {[0, 150, 300].map((delay) => (
+                  <div
+                    className="px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1.5 items-center"
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}
+                  >
+                    {[0, 140, 280].map((delay) => (
                       <span
                         key={delay}
-                        className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                        className="w-1.5 h-1.5 rounded-full bg-white/30 animate-bounce"
                         style={{ animationDelay: `${delay}ms` }}
                       />
                     ))}
@@ -292,7 +284,9 @@ const Chatbot = () => {
             </div>
 
             {/* Input */}
-            <div className="px-3 py-3 border-t border-slate-200 dark:border-slate-700 flex gap-2 flex-shrink-0 bg-white dark:bg-slate-900">
+            <div
+              className="px-3 py-3 flex gap-2 flex-shrink-0 border-t border-white/[0.06]"
+            >
               <input
                 ref={inputRef}
                 type="text"
@@ -300,15 +294,20 @@ const Chatbot = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKey}
                 placeholder="Ask about Nagarjun…"
-                className="flex-1 px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 px-3 py-2 text-sm rounded-xl text-white/80 placeholder-white/22 font-mono focus:outline-none transition"
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || loading}
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-700 dark:disabled:to-slate-700 text-white transition flex-shrink-0"
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-white flex-shrink-0 disabled:opacity-25 transition-opacity"
+                style={{ background: "linear-gradient(135deg, #a78bfa, #22d3ee)" }}
                 aria-label="Send message"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
               </button>
@@ -318,20 +317,27 @@ const Chatbot = () => {
       </AnimatePresence>
 
       {/* FAB + tooltip */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+      <div className="fixed bottom-6 right-6 z-[800] flex flex-col items-end gap-3">
         {/* Tooltip */}
         <AnimatePresence>
           {showTooltip && !open && (
             <motion.div
-              initial={{ opacity: 0, y: 6, scale: 0.95 }}
+              className="relative px-4 py-2.5 rounded-xl text-[11px] font-mono text-white/75 whitespace-nowrap pointer-events-none"
+              style={{
+                background: "rgba(10,12,17,0.97)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+              }}
+              initial={{ opacity: 0, y: 8, scale: 0.94 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 6, scale: 0.95 }}
-              transition={{ duration: 0.15 }}
-              className="relative bg-slate-900 dark:bg-slate-700 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl shadow-xl whitespace-nowrap pointer-events-none"
+              exit={{ opacity: 0, y: 8, scale: 0.94 }}
+              transition={{ duration: 0.18 }}
             >
               Want to know more about Nagarjun?
-              {/* Tooltip arrow */}
-              <span className="absolute -bottom-1.5 right-5 w-3 h-3 bg-slate-900 dark:bg-slate-700 rotate-45" />
+              <span
+                className="absolute -bottom-1.5 right-6 w-3 h-3 rotate-45"
+                style={{ background: "rgba(10,12,17,0.97)", borderRight: "1px solid rgba(255,255,255,0.1)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -341,21 +347,26 @@ const Chatbot = () => {
           onClick={() => { setOpen((o) => !o); setShowTooltip(false); }}
           onMouseEnter={() => { if (!open) setShowTooltip(true); }}
           onMouseLeave={() => setShowTooltip(false)}
-          className="relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-xl shadow-indigo-300/50 dark:shadow-indigo-900/60 flex items-center justify-center"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.93 }}
-          aria-label="Open chat assistant — Want to know more about Nagarjun?"
+          className="relative w-14 h-14 rounded-full text-white flex items-center justify-center"
+          style={{
+            background: "linear-gradient(135deg, #a78bfa 0%, #22d3ee 100%)",
+            boxShadow: "0 8px 28px rgba(167,139,250,0.4), 0 2px 8px rgba(0,0,0,0.3)",
+          }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          aria-label="Open chat — Want to know more about Nagarjun?"
         >
-          {/* Pulse ring — only when closed */}
           {!open && (
-            <span className="absolute inset-0 rounded-full bg-indigo-400 animate-ping opacity-25 pointer-events-none" />
+            <span
+              className="absolute inset-0 rounded-full animate-ping opacity-20 pointer-events-none"
+              style={{ background: "linear-gradient(135deg, #a78bfa, #22d3ee)" }}
+            />
           )}
 
           <AnimatePresence mode="wait">
             {open ? (
               <motion.svg
                 key="close"
-                xmlns="http://www.w3.org/2000/svg"
                 className="w-6 h-6"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -370,7 +381,6 @@ const Chatbot = () => {
             ) : (
               <motion.svg
                 key="chat"
-                xmlns="http://www.w3.org/2000/svg"
                 className="w-6 h-6"
                 fill="none"
                 viewBox="0 0 24 24"

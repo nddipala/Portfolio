@@ -1,48 +1,82 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import ProfilePic from "../assets/profile.jpg";
 
 const marqueeItems = [
-  "Aetna · CVS Health",
-  "Citi Bank",
-  "Elevance Health",
-  "Univ. of Memphis",
-  "Spring Boot",
-  "Apache Kafka",
-  "Google Kubernetes",
-  "React",
-  "PostgreSQL / PostGIS",
-  "AWS",
-  "Azure",
-  "GCP",
-  "Microservices",
-  "Java 17",
-  "Terraform",
-  "Argo CD",
-  "GitHub Actions",
-  "Grafana",
-  "Splunk",
-  "Docker",
+  "Aetna · CVS Health", "Citi Bank", "Elevance Health", "Univ. of Memphis",
+  "Spring Boot", "Apache Kafka", "Google Kubernetes", "React",
+  "PostgreSQL / PostGIS", "AWS", "Azure", "GCP", "Microservices",
+  "Java 17", "Terraform", "Argo CD", "GitHub Actions", "Grafana", "Splunk", "Docker",
 ];
 
+function useCounter(end, duration = 1600, decimals = 0) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const target = parseFloat(end);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const startTime = performance.now();
+          const tick = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = eased * target;
+            setCount(decimals > 0 ? parseFloat(current.toFixed(decimals)) : Math.floor(current));
+            if (progress < 1) requestAnimationFrame(tick);
+            else setCount(target);
+          };
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [end, duration, decimals]);
+
+  return [count, ref];
+}
+
+function StatCard({ value, suffix, label, color }) {
+  const numStr = value.replace(/[^0-9.]/g, "");
+  const decimals = numStr.includes(".") ? numStr.split(".")[1].length : 0;
+  const [count, ref] = useCounter(numStr, 1800, decimals);
+
+  return (
+    <div
+      ref={ref}
+      className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-4 backdrop-blur-sm hover:border-white/[0.12] transition-colors"
+    >
+      <p className={`text-2xl font-bold font-mono mb-1 ${color}`}>
+        {decimals > 0 ? count.toFixed(decimals) : count}
+        {suffix}
+      </p>
+      <p className="text-[10px] text-white/35 font-mono uppercase tracking-widest leading-tight">
+        {label}
+      </p>
+    </div>
+  );
+}
+
 const stats = [
-  { value: "7+", label: "Years Production", color: "text-brand-cyan" },
-  { value: "1M+", label: "API Reqs / Day", color: "text-brand-violet" },
-  { value: "5M+", label: "Kafka Events / Day", color: "text-brand-green" },
-  { value: "99.99%", label: "Availability SLA", color: "text-brand-amber" },
+  { value: "7", suffix: "+", label: "Years Production", color: "text-brand-cyan" },
+  { value: "1", suffix: "M+", label: "API Reqs / Day", color: "text-brand-violet" },
+  { value: "5", suffix: "M+", label: "Kafka Events / Day", color: "text-brand-green" },
+  { value: "99.99", suffix: "%", label: "Availability SLA", color: "text-brand-amber" },
 ];
 
 const Hero = () => {
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-ink-000"
-    >
+    <section id="hero" className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-ink-000">
       {/* Ambient glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-brand-violet/8 blur-[140px]" />
         <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-brand-cyan/8 blur-[140px]" />
-        {/* Subtle grid */}
         <div
           className="absolute inset-0 opacity-[0.022]"
           style={{
@@ -78,7 +112,7 @@ const Hero = () => {
               </span>
             </motion.div>
 
-            {/* Giant headline */}
+            {/* Cinematic headline */}
             <motion.h1
               className="mb-10 leading-[1.02] tracking-tight"
               initial={{ opacity: 0, y: 24 }}
@@ -94,7 +128,7 @@ const Hero = () => {
                 production&#8209;grade
               </span>
               <span className="block text-white">systems for</span>
-              <span className="block text-white/30">regulated industries.</span>
+              <span className="block text-white/28">regulated industries.</span>
             </motion.h1>
 
             {/* Meta row */}
@@ -147,9 +181,17 @@ const Hero = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </a>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent("open-command-palette"))}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-white/[0.08] text-white/30 text-[11px] font-mono hover:border-white/[0.16] hover:text-white/55 transition-all duration-200"
+                aria-label="Open command palette"
+              >
+                <span>⌘K</span>
+                <span>Quick nav</span>
+              </button>
             </motion.div>
 
-            {/* Stats bento */}
+            {/* Animated stat cards */}
             <motion.div
               className="grid grid-cols-2 sm:grid-cols-4 gap-3"
               initial={{ opacity: 0, y: 16 }}
@@ -157,17 +199,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-4 backdrop-blur-sm hover:border-white/[0.12] transition-colors"
-                >
-                  <p className={`text-2xl font-bold font-mono mb-1 ${stat.color}`}>
-                    {stat.value}
-                  </p>
-                  <p className="text-[10px] text-white/35 font-mono uppercase tracking-widest leading-tight">
-                    {stat.label}
-                  </p>
-                </div>
+                <StatCard key={stat.label} {...stat} />
               ))}
             </motion.div>
           </div>

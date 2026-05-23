@@ -10,6 +10,7 @@ import BlogList from "./components/BlogList";
 import BlogDetail from "./components/BlogDetail";
 import Footer from "./components/Footer";
 import Chatbot from "./components/Chatbot";
+import CommandPalette from "./components/CommandPalette";
 
 function ScrollProgress() {
   const [progress, setProgress] = useState(0);
@@ -45,6 +46,7 @@ function App() {
   return (
     <Router>
       <ScrollProgress />
+      <CommandPalette />
       <Header />
       <Chatbot />
       <Routes>
