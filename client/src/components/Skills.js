@@ -126,6 +126,9 @@ const Skills = () => {
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
             Technical Skills
           </h2>
+          <p className="mt-3 text-slate-500 dark:text-slate-400 max-w-sm mx-auto text-sm leading-relaxed">
+            The stack behind 7+ years of production systems — from JVM to the cloud edge.
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -134,7 +137,7 @@ const Skills = () => {
             return (
               <motion.div
                 key={index}
-                className={`rounded-2xl border p-6 ${c.bg} ${c.border}`}
+                className={`rounded-2xl border p-6 ${c.bg} ${c.border} transition-shadow duration-300 hover:shadow-lg`}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

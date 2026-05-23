@@ -72,9 +72,9 @@ PROFESSIONAL EXPERIENCE:
    Role: Full Stack Developer (Contract)
    Period: Aug 2021 – Aug 2023
    Key achievements:
-   - Built Java 8/Spring Boot microservices for digital banking (account management, funds transfer, statements) serving hundreds of thousands of daily users
-   - Improved SQL Server query performance by 20% via Hibernate/JPA tuning and targeted indexing
-   - Reduced UAT regression defects by 30% release-over-release with Jenkins/Maven/TestNG/Selenium CI pipelines
+   - Built Java 8/Spring Boot microservices for digital banking serving hundreds of thousands of daily users
+   - Improved SQL Server query performance by 20% via Hibernate/JPA tuning
+   - Reduced UAT regression defects by 30% with Jenkins/Maven/TestNG/Selenium CI pipelines
    - Cut MongoDB audit-data retrieval times by 15% and lifted key components to Azure
 
 4. Elevance Health — Hyderabad, India (On-site)
@@ -107,6 +107,10 @@ You may greet users warmly and guide them to ask about Nagarjun's work.`;
 const RATE_LIMIT_MESSAGE =
   "Nagarjun is busy on a production issue right now and I've hit my daily limit. Please come back later! If it's important, drop a message on the Contacts page — Nagarjun will check and get back to you. 🙂";
 
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
 function getUsage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -119,10 +123,6 @@ function getUsage() {
   }
 }
 
-function today() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 function incrementUsage() {
   const usage = getUsage();
   usage.count += 1;
@@ -132,22 +132,27 @@ function incrementUsage() {
 
 const WELCOME = {
   role: "assistant",
-  content:
-    "👋 Hi! I'm Nagarjun's portfolio assistant. Ask me anything about his skills, experience, projects, or how to get in touch!",
+  content: "👋 Hi! I'm Nagarjun's portfolio assistant. Ask me anything about his skills, experience, projects, or how to get in touch!",
 };
 
 const Chatbot = () => {
   const [open, setOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [messages, setMessages] = useState([WELCOME]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Show tooltip briefly on first load to draw attention
   useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 200);
-    }
+    const timer = setTimeout(() => setShowTooltip(true), 3000);
+    const hide = setTimeout(() => setShowTooltip(false), 7000);
+    return () => { clearTimeout(timer); clearTimeout(hide); };
+  }, []);
+
+  useEffect(() => {
+    if (open) setTimeout(() => inputRef.current?.focus(), 200);
   }, [open]);
 
   useEffect(() => {
@@ -169,8 +174,7 @@ const Chatbot = () => {
       return;
     }
 
-    const userMsg = { role: "user", content: text };
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [...prev, { role: "user", content: text }]);
     setInput("");
     setLoading(true);
 
@@ -187,10 +191,7 @@ const Chatbot = () => {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          system: SYSTEM_PROMPT,
-          messages: history,
-        }),
+        body: JSON.stringify({ system: SYSTEM_PROMPT, messages: history }),
       });
 
       const data = await res.json();
@@ -203,20 +204,13 @@ const Chatbot = () => {
 
       if (!res.ok) throw new Error(data.error || "API error");
 
-      const reply =
-        data.reply ||
-        "Sorry, I couldn't generate a response. Please try again.";
-
+      const reply = data.reply || "Sorry, I couldn't generate a response. Please try again.";
       incrementUsage();
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content:
-            "Something went wrong on my end. Please try again in a moment!",
-        },
+        { role: "assistant", content: "Something went wrong on my end. Please try again in a moment!" },
       ]);
     } finally {
       setLoading(false);
@@ -236,46 +230,31 @@ const Chatbot = () => {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed bottom-24 right-5 z-50 w-[350px] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden"
-            style={{ height: "480px" }}
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-24 right-5 z-50 w-[350px] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden"
+            style={{ height: 480 }}
+            initial={{ opacity: 0, y: 16, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: 16, scale: 0.96 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
-            {/* Header */}
-            <div className="bg-indigo-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-sm font-bold">
+            {/* Panel header */}
+            <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                   N
                 </div>
                 <div>
-                  <p className="text-white text-sm font-semibold leading-none">
-                    Nagarjun's Assistant
-                  </p>
-                  <p className="text-indigo-200 text-xs mt-0.5">
-                    Ask me anything about Nagarjun
-                  </p>
+                  <p className="text-white text-sm font-semibold leading-none">Nagarjun's Assistant</p>
+                  <p className="text-indigo-200 text-xs mt-0.5">Ask me anything about Nagarjun</p>
                 </div>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="text-white/70 hover:text-white transition p-1"
+                className="text-white/70 hover:text-white transition p-1 rounded-lg hover:bg-white/10"
                 aria-label="Close chat"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
@@ -283,16 +262,11 @@ const Chatbot = () => {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 text-sm">
               {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex ${
-                    msg.role === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
+                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl leading-relaxed whitespace-pre-wrap ${
+                    className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl leading-relaxed whitespace-pre-wrap text-sm ${
                       msg.role === "user"
-                        ? "bg-indigo-600 text-white rounded-br-sm"
+                        ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-br-sm"
                         : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-sm"
                     }`}
                   >
@@ -304,9 +278,13 @@ const Chatbot = () => {
               {loading && (
                 <div className="flex justify-start">
                   <div className="bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1 items-center">
-                    <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    {[0, 150, 300].map((delay) => (
+                      <span
+                        key={delay}
+                        className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                        style={{ animationDelay: `${delay}ms` }}
+                      />
+                    ))}
                   </div>
                 </div>
               )}
@@ -314,7 +292,7 @@ const Chatbot = () => {
             </div>
 
             {/* Input */}
-            <div className="px-3 py-3 border-t border-slate-200 dark:border-slate-700 flex gap-2 flex-shrink-0">
+            <div className="px-3 py-3 border-t border-slate-200 dark:border-slate-700 flex gap-2 flex-shrink-0 bg-white dark:bg-slate-900">
               <input
                 ref={inputRef}
                 type="text"
@@ -327,22 +305,11 @@ const Chatbot = () => {
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || loading}
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white transition flex-shrink-0"
-                aria-label="Send"
+                className="w-9 h-9 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 disabled:from-slate-300 disabled:to-slate-300 dark:disabled:from-slate-700 dark:disabled:to-slate-700 text-white transition flex-shrink-0"
+                aria-label="Send message"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
               </button>
             </div>
@@ -350,48 +317,75 @@ const Chatbot = () => {
         )}
       </AnimatePresence>
 
-      {/* FAB */}
-      <motion.button
-        onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-300 dark:shadow-indigo-900 flex items-center justify-center transition-colors"
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.94 }}
-        aria-label="Open chat assistant"
-      >
-        <AnimatePresence mode="wait">
-          {open ? (
-            <motion.svg
-              key="close"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
+      {/* FAB + tooltip */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+        {/* Tooltip */}
+        <AnimatePresence>
+          {showTooltip && !open && (
+            <motion.div
+              initial={{ opacity: 0, y: 6, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 6, scale: 0.95 }}
               transition={{ duration: 0.15 }}
+              className="relative bg-slate-900 dark:bg-slate-700 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl shadow-xl whitespace-nowrap pointer-events-none"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </motion.svg>
-          ) : (
-            <motion.svg
-              key="chat"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </motion.svg>
+              Want to know more about Nagarjun?
+              {/* Tooltip arrow */}
+              <span className="absolute -bottom-1.5 right-5 w-3 h-3 bg-slate-900 dark:bg-slate-700 rotate-45" />
+            </motion.div>
           )}
         </AnimatePresence>
-      </motion.button>
+
+        {/* FAB */}
+        <motion.button
+          onClick={() => { setOpen((o) => !o); setShowTooltip(false); }}
+          onMouseEnter={() => { if (!open) setShowTooltip(true); }}
+          onMouseLeave={() => setShowTooltip(false)}
+          className="relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-xl shadow-indigo-300/50 dark:shadow-indigo-900/60 flex items-center justify-center"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.93 }}
+          aria-label="Open chat assistant — Want to know more about Nagarjun?"
+        >
+          {/* Pulse ring — only when closed */}
+          {!open && (
+            <span className="absolute inset-0 rounded-full bg-indigo-400 animate-ping opacity-25 pointer-events-none" />
+          )}
+
+          <AnimatePresence mode="wait">
+            {open ? (
+              <motion.svg
+                key="close"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </motion.svg>
+            ) : (
+              <motion.svg
+                key="chat"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </motion.svg>
+            )}
+          </AnimatePresence>
+        </motion.button>
+      </div>
     </>
   );
 };

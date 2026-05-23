@@ -11,6 +11,7 @@ const projects = [
     github: "https://github.com/nddipala",
     highlights: ["Drive-time & proximity analysis", "Provider network gap visualization", "PostGIS spatial queries"],
     color: "indigo",
+    featured: true,
   },
   {
     title: "Automated Geospatial Analytics Platform",
@@ -21,6 +22,7 @@ const projects = [
     github: "https://github.com/nddipala",
     highlights: ["Nightly automated ETL", "Self-serve spatial queries", "Multi-research-group adoption"],
     color: "violet",
+    featured: false,
   },
   {
     title: "Multithreaded Data Visualization Tool",
@@ -31,30 +33,37 @@ const projects = [
     github: "https://github.com/nddipala",
     highlights: ["1M+ row dataset support", "30% faster processing", "Saveable chart layouts"],
     color: "blue",
+    featured: false,
   },
 ];
 
 const colorMap = {
   indigo: {
-    accent: "border-indigo-500",
+    strip: "bg-gradient-to-r from-indigo-500 to-violet-500",
     badge: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300",
     tag: "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300",
     dot: "bg-indigo-500",
-    link: "text-indigo-600 hover:text-indigo-700 dark:text-indigo-400",
+    number: "text-indigo-100 dark:text-indigo-900/60",
+    link: "text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300",
+    check: "text-indigo-500 dark:text-indigo-400",
   },
   violet: {
-    accent: "border-violet-500",
+    strip: "bg-gradient-to-r from-violet-500 to-purple-500",
     badge: "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300",
     tag: "bg-violet-50 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300",
     dot: "bg-violet-500",
-    link: "text-violet-600 hover:text-violet-700 dark:text-violet-400",
+    number: "text-violet-100 dark:text-violet-900/60",
+    link: "text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300",
+    check: "text-violet-500 dark:text-violet-400",
   },
   blue: {
-    accent: "border-blue-500",
+    strip: "bg-gradient-to-r from-blue-500 to-cyan-500",
     badge: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
     tag: "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300",
     dot: "bg-blue-500",
-    link: "text-blue-600 hover:text-blue-700 dark:text-blue-400",
+    number: "text-blue-100 dark:text-blue-900/60",
+    link: "text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300",
+    check: "text-blue-500 dark:text-blue-400",
   },
 };
 
@@ -63,18 +72,31 @@ const Projects = () => {
     <section id="projects" className="py-24 bg-slate-50 dark:bg-slate-950 px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div
-          className="text-center mb-16"
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-2">
-            Work
-          </p>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
-            Selected Projects
-          </h2>
+          <div>
+            <p className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-2">
+              Work
+            </p>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
+              Selected Projects
+            </h2>
+          </div>
+          <a
+            href="https://github.com/nddipala"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors group flex-shrink-0"
+          >
+            View all on GitHub
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
         </motion.div>
 
         <div className="grid gap-8 md:grid-cols-3">
@@ -83,60 +105,81 @@ const Projects = () => {
             return (
               <motion.div
                 key={index}
-                className={`bg-white dark:bg-slate-900 rounded-2xl border-t-4 ${c.accent} border border-slate-200 dark:border-slate-800 p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col`}
+                className="relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.15 }}
+                transition={{ duration: 0.5, delay: index * 0.12 }}
                 whileHover={{ y: -6 }}
               >
-                <div className="mb-4">
-                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${c.badge}`}>
-                    {project.context}
-                  </span>
-                </div>
+                {/* Gradient color strip */}
+                <div className={`h-1.5 w-full ${c.strip}`} />
 
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug">
-                  {project.title}
-                </h3>
-
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-5 flex-1">
-                  {project.description}
-                </p>
-
-                {/* Highlights */}
-                <ul className="space-y-1.5 mb-5">
-                  {project.highlights.map((h) => (
-                    <li key={h} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
-                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${c.dot}`} />
-                      {h}
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Tech tags */}
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {project.tech.map((t) => (
-                    <span
-                      key={t}
-                      className={`text-xs px-2.5 py-0.5 rounded-md font-medium ${c.tag}`}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 text-sm font-semibold ${c.link} transition-colors`}
+                {/* Large background project number */}
+                <span
+                  className={`absolute top-4 right-4 text-7xl font-black select-none pointer-events-none leading-none ${c.number}`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-                  </svg>
-                  View on GitHub
-                </a>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <div className="p-6 flex flex-col flex-1 relative">
+                  {/* Context + featured badge */}
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${c.badge}`}>
+                      {project.context}
+                    </span>
+                    {project.featured && (
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+                        ★ Featured
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug">
+                    {project.title}
+                  </h3>
+
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-5 flex-1">
+                    {project.description}
+                  </p>
+
+                  {/* Highlights with checkmarks */}
+                  <ul className="space-y-2 mb-5">
+                    {project.highlights.map((h) => (
+                      <li key={h} className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" className={`w-4 h-4 flex-shrink-0 mt-0.5 ${c.check}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {h}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Tech tags */}
+                  <div className="flex flex-wrap gap-1.5 mb-5">
+                    {project.tech.map((t) => (
+                      <span
+                        key={t}
+                        className={`text-xs px-2.5 py-0.5 rounded-md font-medium ${c.tag}`}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* GitHub link */}
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-2 text-sm font-semibold ${c.link} transition-colors group/link`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 group-hover/link:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                    View on GitHub
+                  </a>
+                </div>
               </motion.div>
             );
           })}
