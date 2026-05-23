@@ -1,156 +1,173 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { label: "About", href: "/#hero", id: "hero" },
   { label: "Experience", href: "/#experience", id: "experience" },
   { label: "Skills", href: "/#skills", id: "skills" },
   { label: "Projects", href: "/#projects", id: "projects" },
+  { label: "Contact", href: "/contact", id: "contact" },
 ];
 
 const Header = () => {
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
   const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState("hero");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("hero");
+  const location = useLocation();
+  const isHome = location.pathname === "/" || location.pathname === "/home";
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
+    if (!isHome) return;
     const ids = ["hero", "experience", "skills", "projects"];
     const observers = ids.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
       const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        ([entry]) => { if (entry.isIntersecting) setActive(id); },
         { rootMargin: "-40% 0px -55% 0px" }
       );
       obs.observe(el);
       return obs;
     });
     return () => observers.forEach((o) => o?.disconnect());
-  }, []);
+  }, [isHome]);
+
+  const isLinkActive = (link) => {
+    if (link.id === "contact") return location.pathname === "/contact";
+    return isHome && active === link.id;
+  };
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-slate-800/80"
-          : "bg-transparent"
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={{
+        background: scrolled ? "rgba(6,7,11,0.88)" : "transparent",
+        backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(20px) saturate(180%)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
+        boxShadow: scrolled ? "0 4px 40px rgba(0,0,0,0.4)" : "none",
+      }}
     >
-      <nav className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <a href="/" className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">N</span>
-          agarjun
-          <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">.</span>
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Brand mark */}
+        <a href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-violet to-brand-cyan flex items-center justify-center shadow-lg shadow-brand-violet/20 flex-shrink-0">
+            <span className="text-white font-bold text-sm font-mono">N</span>
+          </div>
+          <span className="text-white/80 font-mono text-sm tracking-tight group-hover:text-white transition-colors">
+            nagarjun<span className="text-brand-violet">.</span>dev
+          </span>
         </a>
 
-        {/* Desktop Nav */}
-        <ul className="hidden md:flex items-center gap-1 text-sm font-medium">
-          {navLinks.map((link) => (
-            <li key={link.label}>
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-0.5">
+          {navLinks.map((link) => {
+            const isActive = isLinkActive(link);
+            return (
               <a
+                key={link.label}
                 href={link.href}
-                className={`relative px-3 py-2 rounded-lg transition-colors duration-200 ${
-                  activeSection === link.id
-                    ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40"
-                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+                className={`relative px-4 py-2 text-[11px] font-mono tracking-[0.12em] uppercase transition-colors duration-200 rounded-lg ${
+                  isActive ? "text-white" : "text-white/35 hover:text-white/70"
                 }`}
               >
-                {link.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-lg bg-white/[0.07] border border-white/[0.1]"
+                    transition={{ type: "spring", bounce: 0.18, duration: 0.45 }}
+                  />
+                )}
+                <span className="relative">{link.label}</span>
               </a>
-            </li>
-          ))}
-        </ul>
+            );
+          })}
+        </nav>
 
-        <div className="flex items-center gap-2">
-          {/* Theme toggle */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-            aria-label="Toggle theme"
-          >
-            {darkMode ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 000 14A7 7 0 0012 5z" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-              </svg>
-            )}
-          </button>
-
-          {/* Hire Me — desktop only */}
+        {/* Right: ⌘K hint + CTA */}
+        <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] text-white/25 text-[10px] font-mono select-none">
+            <span className="text-white/40">⌘K</span>
+            <span>search</span>
+          </div>
           <a
             href="/contact"
-            className="hidden md:inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition shadow-sm shadow-indigo-200 dark:shadow-indigo-900"
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-brand-violet to-brand-cyan text-white text-[11px] font-mono font-medium tracking-[0.1em] uppercase hover:opacity-90 transition-opacity shadow-lg shadow-brand-violet/20"
           >
             Hire Me
           </a>
-
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden w-9 h-9 flex flex-col justify-center items-center gap-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={menuOpen}
-          >
-            <span className={`block h-0.5 w-5 bg-slate-700 dark:bg-slate-300 transition-all origin-center ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`block h-0.5 w-5 bg-slate-700 dark:bg-slate-300 transition-all ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
-            <span className={`block h-0.5 w-5 bg-slate-700 dark:bg-slate-300 transition-all origin-center ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
-          </button>
         </div>
-      </nav>
 
-      {/* Mobile drawer */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        } bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800`}
-      >
-        <ul className="flex flex-col px-6 py-4 gap-1 text-sm font-medium">
-          {navLinks.map((link) => (
-            <li key={link.label}>
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          <span
+            className={`w-4 h-px bg-white/70 transition-all duration-200 ${
+              menuOpen ? "rotate-45 translate-y-[5px]" : ""
+            }`}
+          />
+          <span
+            className={`w-4 h-px bg-white/70 transition-all duration-200 ${
+              menuOpen ? "opacity-0 scale-x-0" : ""
+            }`}
+          />
+          <span
+            className={`w-4 h-px bg-white/70 transition-all duration-200 ${
+              menuOpen ? "-rotate-45 -translate-y-[5px]" : ""
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden border-t border-white/[0.06] px-5 py-4 flex flex-col gap-1"
+            style={{
+              background: "rgba(6,7,11,0.97)",
+              backdropFilter: "blur(20px)",
+            }}
+          >
+            {navLinks.map((link) => (
               <a
+                key={link.label}
                 href={link.href}
-                className={`flex items-center px-3 py-2.5 rounded-lg transition-colors ${
-                  activeSection === link.id
-                    ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 font-semibold"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-                }`}
                 onClick={() => setMenuOpen(false)}
+                className={`py-3 px-4 rounded-lg text-[11px] font-mono tracking-[0.12em] uppercase transition-colors ${
+                  isLinkActive(link)
+                    ? "text-white bg-white/[0.07] border border-white/[0.1]"
+                    : "text-white/40 hover:text-white/70 hover:bg-white/[0.04]"
+                }`}
               >
                 {link.label}
               </a>
-            </li>
-          ))}
-          <li className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+            ))}
             <a
               href="/contact"
-              className="flex items-center justify-center px-3 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition"
               onClick={() => setMenuOpen(false)}
+              className="mt-2 py-3 text-center rounded-lg bg-gradient-to-r from-brand-violet to-brand-cyan text-white text-[11px] font-mono font-medium tracking-[0.1em] uppercase"
             >
               Hire Me
             </a>
-          </li>
-        </ul>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

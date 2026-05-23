@@ -5,24 +5,50 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    background-color: #06070b;
+    color: #f5f7fb;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    background-color: #6366f1;
+    background-color: rgba(167, 139, 250, 0.35);
     color: #ffffff;
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #06070b;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: #c7d2fe;
-    border-radius: 9999px;
+    background: #2d3748;
+    border-radius: 2px;
   }
-  .dark ::-webkit-scrollbar-thumb {
-    background-color: #3730a3;
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4a5568;
+  }
+}
+
+/* Film grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.028;
+}
+
+/* Suppress marquee on reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-rev {
+    animation: none !important;
   }
 }
