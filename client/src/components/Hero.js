@@ -1,180 +1,113 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import ProfilePic from "../assets/profile.jpg";
 
-const marqueeItems = [
-  "Aetna · CVS Health", "Citi Bank", "Elevance Health", "Univ. of Memphis",
-  "Spring Boot", "Apache Kafka", "Google Kubernetes", "React",
-  "PostgreSQL / PostGIS", "AWS", "Azure", "GCP", "Microservices",
-  "Java 17", "Terraform", "Argo CD", "GitHub Actions", "Grafana", "Splunk", "Docker",
-];
-
-function useCounter(end, duration = 1600, decimals = 0) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const target = parseFloat(end);
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const startTime = performance.now();
-          const tick = (now) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const current = eased * target;
-            setCount(decimals > 0 ? parseFloat(current.toFixed(decimals)) : Math.floor(current));
-            if (progress < 1) requestAnimationFrame(tick);
-            else setCount(target);
-          };
-          requestAnimationFrame(tick);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [end, duration, decimals]);
-
-  return [count, ref];
-}
-
-function StatCard({ value, suffix, label, color }) {
-  const numStr = value.replace(/[^0-9.]/g, "");
-  const decimals = numStr.includes(".") ? numStr.split(".")[1].length : 0;
-  const [count, ref] = useCounter(numStr, 1800, decimals);
-
-  return (
-    <div
-      ref={ref}
-      className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-4 backdrop-blur-sm hover:border-white/[0.12] transition-colors"
-    >
-      <p className={`text-2xl font-bold font-mono mb-1 ${color}`}>
-        {decimals > 0 ? count.toFixed(decimals) : count}
-        {suffix}
-      </p>
-      <p className="text-[10px] text-white/35 font-mono uppercase tracking-widest leading-tight">
-        {label}
-      </p>
-    </div>
-  );
-}
-
-const stats = [
-  { value: "7", suffix: "+", label: "Years Production", color: "text-brand-cyan" },
-  { value: "1", suffix: "M+", label: "API Reqs / Day", color: "text-brand-violet" },
-  { value: "5", suffix: "M+", label: "Kafka Events / Day", color: "text-brand-green" },
-  { value: "99.99", suffix: "%", label: "Availability SLA", color: "text-brand-amber" },
-];
-
 const Hero = () => {
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-ink-000">
-      {/* Ambient glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-brand-violet/8 blur-[140px]" />
-        <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-brand-cyan/8 blur-[140px]" />
-        <div
-          className="absolute inset-0 opacity-[0.022]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)
-            `,
-            backgroundSize: "64px 64px",
-          }}
-        />
-      </div>
+    <section id="hero" className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)`,
+          backgroundSize: "72px 72px",
+        }}
+      />
 
-      <div className="relative max-w-7xl mx-auto px-6 pt-28 pb-10 w-full">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-16">
+      <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-20 w-full">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-20">
 
-          {/* Left: typography */}
+          {/* Left: text */}
           <div className="flex-1 min-w-0">
-            {/* Status pill + avatar */}
+            {/* Eyebrow */}
             <motion.div
-              className="flex items-center gap-4 mb-10"
-              initial={{ opacity: 0, y: 16 }}
+              className="flex items-center gap-3 mb-9"
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <img
-                src={ProfilePic}
-                alt="Nagarjun Reddy Dudipala"
-                className="w-11 h-11 rounded-full object-cover ring-2 ring-brand-violet/40 flex-shrink-0"
-              />
-              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-brand-green/30 bg-brand-green/10 text-brand-green text-[11px] font-mono tracking-wider">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse flex-shrink-0" />
-                Available · Open to Opportunities
+              <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#34d399]/30 bg-[#34d399]/08 text-[#34d399] text-[11px] font-mono tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse flex-shrink-0" />
+                Available to join a new team · Remote-first
               </span>
             </motion.div>
 
-            {/* Cinematic headline */}
+            {/* Headline */}
             <motion.h1
-              className="mb-10 leading-[1.02] tracking-tight"
-              initial={{ opacity: 0, y: 24 }}
+              className="mb-9 leading-[1.0] tracking-tight"
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1 }}
-              style={{ fontSize: "clamp(2.6rem, 6.5vw, 6.2rem)", fontWeight: 700 }}
+              transition={{ duration: 0.7, delay: 0.08 }}
+              style={{ fontSize: "clamp(2.8rem, 7vw, 6.5rem)", fontWeight: 700 }}
             >
               <span className="block text-white">Engineering</span>
               <span
-                className="block italic font-serif bg-gradient-to-r from-brand-violet via-brand-cyan to-brand-violet bg-clip-text text-transparent"
+                className="block italic font-serif bg-gradient-to-r from-[#a78bfa] via-[#22d3ee] to-[#a78bfa] bg-clip-text text-transparent"
                 style={{ backgroundSize: "200% 100%" }}
               >
                 production&#8209;grade
               </span>
               <span className="block text-white">systems for</span>
-              <span className="block text-white/28">regulated industries.</span>
+              <span className="block" style={{ color: "rgba(245,247,251,0.22)" }}>regulated industries.</span>
             </motion.h1>
 
             {/* Meta row */}
             <motion.div
-              className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-10 text-[11px] font-mono text-white/35"
+              className="grid grid-cols-3 gap-6 mb-11 max-w-lg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.28 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+            >
+              {[
+                { label: "Base", value: "Memphis → Remote" },
+                { label: "Experience", value: "7+ years" },
+                { label: "Currently", value: "Aetna · CVS" },
+              ].map((m) => (
+                <div key={m.label}>
+                  <p className="text-[9px] font-mono text-white/25 uppercase tracking-[0.2em] mb-1">{m.label}</p>
+                  <p className="text-[12px] font-mono text-white/65">{m.value}</p>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* Stack line */}
+            <motion.div
+              className="flex flex-wrap gap-x-5 gap-y-2 mb-11 text-[11px] font-mono text-white/30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.32 }}
             >
               <span className="flex items-center gap-1.5">
-                <span className="text-brand-cyan">▸</span>
-                Java · Spring Boot · Kafka · IBM MQ
+                <span className="text-[#a78bfa]">▸</span> Java · Spring Boot · Kafka · IBM MQ
               </span>
-              <span className="hidden sm:block text-white/15">·</span>
+              <span className="hidden sm:block text-white/12">·</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-brand-violet">▸</span>
-                React · GKE · Terraform · Argo CD
-              </span>
-              <span className="hidden sm:block text-white/15">·</span>
-              <span className="flex items-center gap-1.5">
-                <span className="text-brand-green">▸</span>
-                Hartford → Memphis → Remote
+                <span className="text-[#22d3ee]">▸</span> React · GKE · Terraform · Argo CD
               </span>
             </motion.div>
 
             {/* CTAs */}
             <motion.div
-              className="flex flex-wrap gap-3 mb-14"
-              initial={{ opacity: 0, y: 12 }}
+              className="flex flex-wrap gap-3"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.38 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
             >
               <a
                 href="/resume.pdf"
                 target="_blank"
                 rel="noreferrer"
-                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-ink-000 text-sm font-semibold hover:bg-white/90 transition-all duration-200 shadow-xl shadow-white/10"
+                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-white text-[#06070b] text-sm font-semibold hover:bg-white/90 transition-all duration-200 shadow-xl shadow-white/8"
               >
-                Resume
+                Download Resume
                 <svg className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
               </a>
               <a
                 href="/contact"
-                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl border border-white/10 text-white/70 text-sm font-semibold hover:bg-white/[0.06] hover:border-white/20 hover:text-white transition-all duration-200"
+                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl border border-white/10 text-white/65 text-sm font-semibold hover:bg-white/[0.06] hover:border-white/20 hover:text-white transition-all duration-200"
               >
                 Let's build together
                 <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -183,47 +116,51 @@ const Hero = () => {
               </a>
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent("open-command-palette"))}
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-white/[0.08] text-white/30 text-[11px] font-mono hover:border-white/[0.16] hover:text-white/55 transition-all duration-200"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-white/[0.07] text-white/28 text-[11px] font-mono hover:border-white/[0.15] hover:text-white/50 transition-all duration-200"
                 aria-label="Open command palette"
               >
                 <span>⌘K</span>
                 <span>Quick nav</span>
               </button>
             </motion.div>
-
-            {/* Animated stat cards */}
-            <motion.div
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              {stats.map((stat) => (
-                <StatCard key={stat.label} {...stat} />
-              ))}
-            </motion.div>
           </div>
 
-          {/* Right: photo (desktop only) */}
+          {/* Right: portrait (desktop only) */}
           <motion.div
             className="hidden lg:block flex-shrink-0"
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            transition={{ duration: 0.9, delay: 0.12 }}
           >
             <div className="relative">
-              <div className="absolute -inset-0.5 rounded-3xl bg-gradient-to-br from-brand-violet via-brand-cyan to-brand-green opacity-60 blur-sm" />
+              {/* Glow ring */}
+              <div className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#a78bfa] via-[#22d3ee] to-[#34d399] opacity-50 blur-md" />
               <img
                 src={ProfilePic}
                 alt="Nagarjun Reddy Dudipala — Sr. Full Stack Java Developer"
-                className="relative w-72 h-[380px] object-cover rounded-3xl border border-white/10"
+                className="relative w-72 h-[390px] object-cover rounded-3xl border border-white/10"
               />
+              {/* Caption pill */}
               <div
-                className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-2 rounded-xl border border-white/10 flex items-center gap-2 text-xs font-mono text-white/70"
-                style={{ background: "rgba(14,17,23,0.9)", backdropFilter: "blur(12px)" }}
+                className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-2 rounded-xl border border-white/10 flex items-center gap-2 text-xs font-mono text-white/65"
+                style={{ background: "rgba(6,7,11,0.92)", backdropFilter: "blur(16px)" }}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
                 Available for Work
+              </div>
+              {/* Tech tag top-left */}
+              <div
+                className="absolute -top-4 -left-6 px-3 py-1.5 rounded-lg border border-[#a78bfa]/25 text-[10px] font-mono text-[#a78bfa]"
+                style={{ background: "rgba(167,139,250,0.10)", backdropFilter: "blur(12px)" }}
+              >
+                Spring Boot · Kafka
+              </div>
+              {/* Tech tag right */}
+              <div
+                className="absolute top-1/3 -right-6 px-3 py-1.5 rounded-lg border border-[#22d3ee]/25 text-[10px] font-mono text-[#22d3ee]"
+                style={{ background: "rgba(34,211,238,0.10)", backdropFilter: "blur(12px)" }}
+              >
+                GKE · Terraform
               </div>
             </div>
           </motion.div>
@@ -233,21 +170,30 @@ const Hero = () => {
 
       {/* Marquee ticker */}
       <motion.div
-        className="relative overflow-hidden border-t border-white/[0.05] py-4 mt-4"
-        style={{ background: "rgba(255,255,255,0.01)" }}
+        className="relative overflow-hidden border-t py-4 mt-6"
+        style={{ borderColor: "rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.008)" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
+        transition={{ duration: 0.6, delay: 0.75 }}
       >
         <div className="flex animate-marquee" style={{ width: "max-content" }}>
-          {[...marqueeItems, ...marqueeItems].map((item, i) => (
+          {[
+            "Aetna · CVS Health", "Citi Bank", "Elevance Health", "Univ. of Memphis",
+            "Spring Boot", "Apache Kafka", "Google Kubernetes", "React",
+            "PostgreSQL / PostGIS", "AWS", "Azure", "GCP", "Microservices",
+            "Java 17", "Terraform", "Argo CD", "GitHub Actions", "Grafana", "Splunk", "Docker",
+            "Aetna · CVS Health", "Citi Bank", "Elevance Health", "Univ. of Memphis",
+            "Spring Boot", "Apache Kafka", "Google Kubernetes", "React",
+            "PostgreSQL / PostGIS", "AWS", "Azure", "GCP", "Microservices",
+            "Java 17", "Terraform", "Argo CD", "GitHub Actions", "Grafana", "Splunk", "Docker",
+          ].map((item, i) => (
             <span
               key={i}
-              className="flex-shrink-0 text-[10px] font-mono text-white/20 uppercase tracking-[0.15em]"
+              className="flex-shrink-0 text-[10px] font-mono text-white/18 uppercase tracking-[0.16em]"
               style={{ padding: "0 2.5rem" }}
             >
               {item}
-              <span className="ml-[2.5rem] text-white/10">·</span>
+              <span className="ml-[2.5rem] text-white/8">·</span>
             </span>
           ))}
         </div>
