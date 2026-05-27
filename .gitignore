@@ -13,3 +13,11 @@ node_modules/
 # Tooling
 .vscode/
 .DS_Store
+.vercel
+
+# Playwright
+playwright-report/
+playwright-out/
+test-results/
+demo-output/*.webm
+demo-output/*.mp4

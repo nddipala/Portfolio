@@ -1,0 +1,15 @@
+{
+  "name": "nagarjun-portfolio-playwright",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright demo automation for nagarjun.dev portfolio",
+  "scripts": {
+    "demo:chatbot": "playwright test tests/demo/chatbot.spec.ts --reporter=line",
+    "demo:chatbot:headed": "playwright test tests/demo/chatbot.spec.ts --headed --reporter=line",
+    "demo:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "typescript": "^5.7.2"
+  }
+}
