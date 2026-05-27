@@ -17,7 +17,9 @@ node_modules/
 
 # Playwright
 playwright-report/
+playwright-cinematic-report/
 playwright-out/
 test-results/
+playwright-cinematic-results/
 demo-output/*.webm
 demo-output/*.mp4

@@ -6,6 +6,8 @@
   "scripts": {
     "demo:chatbot": "playwright test tests/demo/chatbot.spec.ts --reporter=line",
     "demo:chatbot:headed": "playwright test tests/demo/chatbot.spec.ts --headed --reporter=line",
+    "demo:cinematic": "playwright test playwright-demo/chatbot-cinematic.spec.ts --config=playwright-cinematic.config.ts --reporter=line",
+    "demo:cinematic:headed": "playwright test playwright-demo/chatbot-cinematic.spec.ts --config=playwright-cinematic.config.ts --headed --reporter=line",
     "demo:install": "playwright install chromium"
   },
   "devDependencies": {
